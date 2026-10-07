@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login - Price Recommendation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .login-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .user-type-selector {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .user-type-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .user-type-btn.active {
+            background: white;
+            color: #4CAF50;
+            border-bottom: 3px solid #4CAF50;
+        }
+
+        .user-type-btn:hover {
+            background: #e9ecef;
+        }
+
+        .login-form {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            color: #666;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: white;
+            padding: 0 5px;
+        }
+
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: -10px;
+            font-size: 12px;
+            color: #4CAF50;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+        }
+
+        .forgot-password {
+            font-size: 14px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e1e5e9;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .social-btn:hover {
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .register-link {
+            text-align: center;
+        }
+
+        .register-link a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: #45a049;
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-error {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+        }
+
+        .alert-success {
+            background-color: #efe;
+            border: 1px solid #cfc;
+            color: #363;
+        }
+
+        .alert-info {
+            background-color: #eff;
+            border: 1px solid #ccf;
+            color: #336;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                max-width: none;
+            }
+
+            .login-header {
+                padding: 20px 30px;
+            }
+
+            .login-form {
+                padding: 30px 20px;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>🔐 User Login</h1>
+            <p>Access your account</p>
+        </div>
+
+        <!-- User Type Selector -->
+        <div class="user-type-selector">
+            <button class="user-type-btn active" data-type="customer">Customer</button>
+            <button class="user-type-btn" data-type="gardener">Gardener</button>
+            <button class="user-type-btn" data-type="admin">Admin</button>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <input type="email" id="email" placeholder=" " required>
+                <label for="email">Email Address</label>
+            </div>
+
+            <div class="form-group">
+                <input type="password" id="password" placeholder=" " required>
+                <label for="password">Password</label>
+            </div>
+
+            <div class="options">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember"> Remember me
+                </label>
+                <a href="#" class="forgot-password" id="forgotPassword">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                Sign In as <span id="userTypeText">Customer</span>
+            </button>
+
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+            <div class="social-login">
+                <a href="#" class="social-btn" id="googleLogin">
+                    📧 Google
+                </a>
+                <a href="#" class="social-btn" id="facebookLogin">
+                    📘 Facebook
+                </a>
+            </div>
+
+            <div class="register-link">
+                Don't have an account? <a href="register.html">Create one</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentUserType = 'customer';
+
+        // User type selector
+        document.querySelectorAll('.user-type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.user-type-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentUserType = this.dataset.type;
+                document.getElementById('userTypeText').textContent = this.textContent;
+                showUserTypeInfo();
+            });
+        });
+
+        // Form handling
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            const loginBtn = document.getElementById('loginBtn');
+
+            // Clear previous alerts
+            const alertDiv = document.getElementById('alert');
+            alertDiv.style.display = 'none';
+            alertDiv.className = 'alert';
+
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="loading"></span>Signing in...';
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password, userType: currentUserType })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Success - redirect based on user type
+                    showAlert(`Login successful as ${currentUserType}! Redirecting...`, 'success');
+                    setTimeout(() => {
+                        redirectBasedOnUserType(currentUserType);
+                    }, 1000);
+                } else {
+                    // Error
+                    showAlert(data.error || 'Login failed. Please check your credentials.', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('Network error. Please check your connection and try again.', 'error');
+            }
+
+            // Reset button
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = `Sign In as <span id="userTypeText">${document.querySelector('.user-type-btn.active').textContent}</span>`;
+        });
+
+        // Social login handlers
+        document.getElementById('googleLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            showAlert('Google login integration coming soon!', 'info');
+        });
+
+        document.getElementById('facebookLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            showAlert('Facebook login integration coming soon!', 'info');
+        });
+
+        // Forgot password handler
+        document.getElementById('forgotPassword').addEventListener('click', function(e) {
+            e.preventDefault();
+            showAlert('Password reset feature coming soon! Use demo credentials for now.', 'info');
+        });
+
+        // Redirect based on user type
+        function redirectBasedOnUserType(userType) {
+            switch(userType) {
+                case 'customer':
+                    window.location.href = '/';
+                    break;
+                case 'gardener':
+                    window.location.href = '/gardener-dashboard';
+                    break;
+                case 'admin':
+                    window.location.href = '/admin-dashboard';
+                    break;
+                default:
+                    window.location.href = '/';
+            }
+        }
+
+        // Show user type specific information
+        function showUserTypeInfo() {
+            const alerts = {
+                customer: 'Access price recommendations and booking system.',
+                gardener: 'Manage your services, view bookings, and track earnings.',
+                admin: 'Full system administration and analytics dashboard.'
+            };
+
+            showAlert(`<strong>${currentUserType.charAt(0).toUpperCase() + currentUserType.slice(1)} Account:</strong> ${alerts[currentUserType]}`, 'info');
+        }
+
+        // Alert function
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.innerHTML = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+
+            // Auto-hide after 5 seconds for non-error alerts
+            if (type !== 'error') {
+                setTimeout(() => {
+                    alertDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Demo credentials helper
+        function showDemoCredentials() {
+            const credentials = {
+                customer: 'john@example.com',
+                gardener: 'mike@gardener.com',
+                admin: 'admin@example.com'
+            };
+
+            const demoInfo = `
+                <strong>Demo Credentials for ${currentUserType.charAt(0).toUpperCase() + currentUserType.slice(1)}:</strong><br>
+                Email: ${credentials[currentUserType]}<br>
+                Password: any password
+            `;
+            showAlert(demoInfo, 'success');
+        }
+
+        // Show demo credentials on page load
+        setTimeout(() => {
+            showDemoCredentials();
+            showUserTypeInfo();
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - System Administration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #424242 0%, #212121 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            border: 1px solid #e0e0e0;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #212121 0%, #000000 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .login-header::before {
+            content: '🔒';
+            font-size: 48px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .login-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .login-header p {
+            opacity: 0.8;
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .security-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .login-form {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            font-family: 'Courier New', monospace;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #212121;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(33, 33, 33, 0.1);
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            color: #666;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: white;
+            padding: 0 5px;
+            font-weight: 500;
+        }
+
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: -10px;
+            font-size: 12px;
+            color: #212121;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #212121 0%, #000000 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 33, 33, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .admin-features {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .admin-features h3 {
+            color: #212121;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .admin-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .admin-features li {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .admin-features li::before {
+            content: '⚡';
+            position: absolute;
+            left: 0;
+            color: #212121;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #212121;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .back-link a:hover {
+            color: #000000;
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #212121;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .two-factor {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .two-factor input {
+            width: 60px;
+            text-align: center;
+            margin: 0 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 20px;
+                max-width: none;
+            }
+
+            .login-header {
+                padding: 20px 30px;
+            }
+
+            .login-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Administrator</h1>
+            <p>System Administration Portal</p>
+        </div>
+
+        <div class="security-notice">
+            🔒 Authorized personnel only. All access is monitored and logged.
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <form class="login-form" id="adminLoginForm">
+            <div class="admin-features">
+                <h3>Administrative Access</h3>
+                <ul>
+                    <li>User management & permissions</li>
+                    <li>System analytics & reporting</li>
+                    <li>Database administration</li>
+                    <li>Security monitoring</li>
+                    <li>Configuration management</li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <input type="email" id="email" placeholder=" " required>
+                <label for="email">Administrator Email</label>
+            </div>
+
+            <div class="form-group">
+                <input type="password" id="password" placeholder=" " required>
+                <label for="password">Access Password</label>
+            </div>
+
+            <!-- Two-factor authentication placeholder -->
+            <div class="two-factor" id="twoFactorSection" style="display: none;">
+                <p style="margin-bottom: 10px; color: #666;">Enter 2FA Code:</p>
+                <input type="text" maxlength="1" id="code1">
+                <input type="text" maxlength="1" id="code2">
+                <input type="text" maxlength="1" id="code3">
+                <input type="text" maxlength="1" id="code4">
+                <input type="text" maxlength="1" id="code5">
+                <input type="text" maxlength="1" id="code6">
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                Access Admin Panel
+            </button>
+
+            <div class="back-link">
+                <a href="user_login.html">← Back to User Login</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Two-factor input handling
+        const codeInputs = document.querySelectorAll('.two-factor input');
+        codeInputs.forEach((input, index) => {
+            input.addEventListener('input', function() {
+                if (this.value.length === 1 && index < codeInputs.length - 1) {
+                    codeInputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Form handling
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+
+            // Clear previous alerts
+            const alertDiv = document.getElementById('alert');
+            alertDiv.style.display = 'none';
+            alertDiv.className = 'alert';
+
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="loading"></span>Authenticating...';
+
+            try {
+                // First login attempt
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password, userType: 'admin' })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Show 2FA for admin (simulated)
+                    document.getElementById('twoFactorSection').style.display = 'block';
+                    showAlert('Primary authentication successful. Please enter your 2FA code.', 'warning');
+
+                    // Reset button for 2FA
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = 'Complete 2FA & Login';
+
+                    // Change form submission to handle 2FA
+                    loginBtn.onclick = async function(e) {
+                        e.preventDefault();
+                        await completeAdminLogin();
+                    };
+
+                } else {
+                    // Error
+                    showAlert(data.error || 'Authentication failed. Access denied.', 'error');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = 'Access Admin Panel';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('Network error. Please check your connection and try again.', 'error');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'Access Admin Panel';
+            }
+        });
+
+        // Complete admin login with 2FA
+        async function completeAdminLogin() {
+            const codeInputs = document.querySelectorAll('.two-factor input');
+            const twoFactorCode = Array.from(codeInputs).map(input => input.value).join('');
+
+            if (twoFactorCode.length !== 6) {
+                showAlert('Please enter the complete 6-digit 2FA code.', 'error');
+                return;
+            }
+
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="loading"></span>Verifying...';
+
+            // Simulate 2FA verification (accept any 6-digit code for demo)
+            setTimeout(() => {
+                showAlert('2FA verification successful! Welcome to the admin panel.', 'success');
+                setTimeout(() => {
+                    window.location.href = '/admin_dashboard.html';
+                }, 1000);
+            }, 1500);
+        }
+
+        // Alert function
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+
+            // Auto-hide after 5 seconds for non-error alerts
+            if (type !== 'error') {
+                setTimeout(() => {
+                    alertDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Demo credentials helper
+        function showDemoCredentials() {
+            const demoInfo = `
+                <strong>Admin Demo Credentials:</strong><br>
+                Email: admin@example.com<br>
+                Password: any password<br>
+                2FA Code: any 6 digits
+            `;
+            showAlert(demoInfo, 'success');
+        }
+
+        // Show demo credentials on page load
+        setTimeout(showDemoCredentials, 1000);
+    </script>
+</body>
+</html>

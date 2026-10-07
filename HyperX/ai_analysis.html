@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Garden Analysis - Price Recommendation System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1f4037 0%, #99f2c8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 800px;
+        }
+
+        /* Navbar */
+        .navbar {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f4037;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(31, 64, 55, 0.1);
+            color: #1f4037;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px;
+            flex-grow: 1;
+            display: flex;
+            gap: 40px;
+        }
+
+        .left-panel,
+        .right-panel {
+            flex: 1;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #1f4037;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Upload Area */
+        .upload-zone {
+            border: 2px dashed #99f2c8;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(153, 242, 200, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone:hover {
+            background: rgba(153, 242, 200, 0.2);
+            border-color: #1f4037;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #1f4037;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            color: #555;
+            font-weight: 500;
+        }
+
+        .upload-subtext {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Preview Video/Image */
+        #previewContainer {
+            margin-top: 20px;
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        #imagePreview {
+            width: 100%;
+            display: block;
+        }
+
+        /* Scan Effect */
+        .scan-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(153, 242, 200, 0.5), transparent);
+            transform: translateY(-100%);
+            animation: scan 2s linear infinite;
+            display: none;
+        }
+
+        @keyframes scan {
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(100%);
+            }
+        }
+
+        /* Results Panel */
+        .results-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            display: none;
+            /* Hidden initially */
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .confidence-score {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .plant-name {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .scientific-name {
+            color: #888;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .recommendation-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .btn-analyze {
+            background: linear-gradient(135deg, #1f4037, #99f2c8);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s;
+            display: none;
+        }
+
+        .btn-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(31, 64, 55, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="logo">🔍 HyperX AI Analysis</div>
+            <div>
+                <a href="/" class="nav-btn">Home</a>
+                <a href="/services" class="nav-btn">Services</a>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <h1>AI Garden Diagnosis</h1>
+                <p class="description">
+                    Upload a photo of your plant or garden area. Our advanced AI model identifies species, diagnoses
+                    diseases, and recommends optimal care routines instantly.
+                </p>
+
+                <div class="upload-zone" id="dropZone">
+                    <div class="upload-icon">📷</div>
+                    <div class="upload-text">Click or Drag Image Here</div>
+                    <div class="upload-subtext">Supports JPG, PNG (Max 5MB)</div>
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+
+                <div id="previewContainer">
+                    <img id="imagePreview" src="" alt="Preview">
+                    <div class="scan-overlay" id="scanOverlay"></div>
+                </div>
+
+                <button class="btn-analyze" id="analyzeBtn">Analyze Plant 🌱</button>
+            </div>
+
+            <div class="right-panel">
+                <!-- Initial State Placeholder -->
+                <div id="initialState" style="text-align: center; padding-top: 50px; opacity: 0.5;">
+                    <div style="font-size: 5rem; margin-bottom: 20px;">🧠</div>
+                    <h3>Waiting for Image</h3>
+                    <p>Results will appear here...</p>
+                </div>
+
+                <!-- Simluated Results -->
+                <div class="results-card" id="resultsCard">
+                    <div class="result-header">
+                        <h3>Analysis Report</h3>
+                        <span class="confidence-score">98.5% Confidence</span>
+                    </div>
+
+                    <h2 class="plant-name" id="plantName">Monstera Deliciosa</h2>
+                    <p class="scientific-name" id="sciName">Araceae Family</p>
+
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Health Status</div>
+                            <div class="stat-value" style="color: #2e7d32;">Excellent</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Water Needs</div>
+                            <div class="stat-value">Moderate (Weekly)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Sunlight</div>
+                            <div class="stat-value">Indirect Bright</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Season</div>
+                            <div class="stat-value">Perennial</div>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-box">
+                        <strong>🤖 AI Tip:</strong>
+                        <p id="aiTip">Leaves look healthy and vibrant. Ensure you rotate the pot every few weeks for
+                            even growth. Consider wiping leaves to remove dust for better photosynthesis.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const resultsCard = document.getElementById('resultsCard');
+        const initialState = document.getElementById('initialState');
+        const scanOverlay = document.getElementById('scanOverlay');
+
+        // Click to upload
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Handle file selection
+        fileInput.addEventListener('change', handleFile);
+
+        function handleFile(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    dropZone.style.display = 'none';
+                    analyzeBtn.style.display = 'block';
+
+                    // Reset results
+                    initialState.style.display = 'block';
+                    resultsCard.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Analyze Simulation
+        analyzeBtn.addEventListener('click', () => {
+            // Start scanning animation
+            scanOverlay.style.display = 'block';
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = 'Analyzing...';
+            analyzeBtn.style.background = '#ccc';
+
+            // Simulate API delay
+            setTimeout(() => {
+                scanOverlay.style.display = 'none';
+                initialState.style.display = 'none';
+                resultsCard.style.display = 'block';
+
+                // Randomize logic for demo (just for fun)
+                randomizeResult();
+
+                analyzeBtn.textContent = 'Analyze Another';
+                analyzeBtn.disabled = false;
+                analyzeBtn.style.background = 'linear-gradient(135deg, #1f4037, #99f2c8)';
+
+                // Change button behavior to reset
+                analyzeBtn.onclick = resetApp;
+            }, 2500);
+        });
+
+        function resetApp() {
+            previewContainer.style.display = 'none';
+            dropZone.style.display = 'block';
+            resultsCard.style.display = 'none';
+            initialState.style.display = 'block';
+            analyzeBtn.style.display = 'none';
+            analyzeBtn.textContent = 'Analyze Plant 🌱';
+            fileInput.value = '';
+
+            // Reattach original listener
+            analyzeBtn.onclick = null;
+            analyzeBtn.addEventListener('click', () => { /* logic duplicated essentially, simpler to reload or just fix flow fully */ });
+            location.reload(); // Simplest reset for prototype
+        }
+
+        const plants = [
+            {
+                name: "Tomato Plant",
+                sci: "Solanum lycopersicum",
+                health: "Needs Attention",
+                water: "Daily",
+                sun: "Full Sun",
+                tip: "Detected minor yellowing on lower leaves. Could be nitrogen deficiency. Recommend adding organic compost."
+            },
+            {
+                name: "Fiddle Leaf Fig",
+                sci: "Ficus lyrata",
+                health: "Good",
+                water: "When soil dry",
+                sun: "Indirect Light",
+                tip: "Great job! Leaf turgidity indicates good hydration. Keep away from drafts."
+            },
+            {
+                name: "Lavender",
+                sci: "Lavandula",
+                health: "Excellent",
+                water: "Sparse",
+                sun: "Direct Sun",
+                tip: "Perfect environment detected. Prune after flowering to maintain shape."
+            }
+        ];
+
+        function randomizeResult() {
+            const plant = plants[Math.floor(Math.random() * plants.length)];
+            document.getElementById('plantName').innerText = plant.name;
+            document.getElementById('sciName').innerText = plant.sci;
+            document.getElementById('aiTip').innerText = plant.tip;
+
+            const stats = document.querySelectorAll('.stat-value');
+            stats[0].innerText = plant.health;
+            if (plant.health === 'Needs Attention') stats[0].style.color = '#d32f2f';
+            else stats[0].style.color = '#2e7d32';
+
+            stats[1].innerText = plant.water;
+            stats[2].innerText = plant.sun;
+        }
+    </script>
+</body>
+
+</html>

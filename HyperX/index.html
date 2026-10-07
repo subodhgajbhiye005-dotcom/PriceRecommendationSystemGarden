@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Recommendation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffffff 0%, #e8f5e9 50%, #c8e6c9 100%);
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(76, 175, 80, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(129, 199, 132, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(200, 230, 201, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%232e7d32" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="%232e7d32" opacity="0.05"/><circle cx="50" cy="10" r="0.5" fill="%232e7d32" opacity="0.05"/><circle cx="10" cy="50" r="0.5" fill="%232e7d32" opacity="0.05"/><circle cx="90" cy="30" r="0.5" fill="%232e7d32" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Full Page Layout Styles */
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background: #fdfdfd;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.8);
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            color: white;
+            background: none;
+            -webkit-text-fill-color: initial;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 15px;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: #2e7d32;
+            font-weight: 600;
+            transition: all 0.3s;
+            background: rgba(232, 245, 233, 0.5);
+        }
+
+        .nav-btn:hover {
+            background: #2e7d32;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Sections */
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #1b5e20;
+            margin-bottom: 30px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e8f5e9;
+            transition: transform 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Services Grid from before */
+        .services-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+            background: none;
+            border: none;
+        }
+
+        .service-item {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Form */
+        .form-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(46, 125, 50, 0.1);
+            max-width: 600px;
+            margin: 0 auto 60px;
+            border: 1px solid #c8e6c9;
+        }
+
+        /* Inputs */
+        input[type="text"],
+        input[type="number"] {
+            border: 1px solid #ccc;
+            background: #fafafa;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: #2e7d32;
+            background: white;
+        }
+
+        button {
+            background: linear-gradient(135deg, #43a047, #2e7d32);
+            font-size: 1.1rem;
+            padding: 15px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: #1b5e20;
+            color: white;
+            margin-top: 50px;
+        }
+
+        .service-icon {
+            height: 120px;
+            margin-bottom: 15px;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .service-icon.tree-cutting .tree-visual,
+        .service-icon.gardening .garden-visual {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        /* Tree Cutting Visual */
+        .tree-trunk {
+            width: 20px;
+            height: 60px;
+            background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
+            position: absolute;
+            bottom: 0;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .tree-branches {
+            position: absolute;
+            bottom: 60px;
+            width: 80px;
+            height: 40px;
+        }
+
+        .branch {
+            position: absolute;
+            background: linear-gradient(180deg, #654321 0%, #8B4513 100%);
+            border-radius: 2px;
+        }
+
+        .branch.left {
+            width: 25px;
+            height: 8px;
+            left: 10px;
+            top: 15px;
+            transform: rotate(-30deg);
+        }
+
+        .branch.right {
+            width: 30px;
+            height: 8px;
+            right: 5px;
+            top: 10px;
+            transform: rotate(25deg);
+        }
+
+        .leaves {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 30px;
+            background: radial-gradient(ellipse, #228B22 0%, #32CD32 70%, #90EE90 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(34, 139, 34, 0.3);
+        }
+
+        .saw-animation {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #C0C0C0 0%, #808080 50%, #C0C0C0 100%);
+            border-radius: 50%;
+            animation: sawMove 2s ease-in-out infinite;
+        }
+
+        @keyframes sawMove {
+
+            0%,
+            100% {
+                transform: translateX(0) rotate(0deg);
+            }
+
+            25% {
+                transform: translateX(-5px) rotate(-5deg);
+            }
+
+            50% {
+                transform: translateX(0) rotate(0deg);
+            }
+
+            75% {
+                transform: translateX(5px) rotate(5deg);
+            }
+        }
+
+        /* Gardening Visual */
+        .garden-bed {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
+            border-radius: 5px 5px 0 0;
+        }
+
+        .plants {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            height: 70px;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+        }
+
+        .plant {
+            position: relative;
+        }
+
+        .plant.flower {
+            width: 15px;
+            height: 25px;
+            background: linear-gradient(180deg, #228B22 0%, #32CD32 100%);
+            border-radius: 2px;
+        }
+
+        .plant.flower::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 15px;
+            background: radial-gradient(circle, #FF69B4 0%, #FF1493 70%, #FFB6C1 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+        }
+
+        .plant.bush {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #228B22 0%, #32CD32 70%, #90EE90 100%);
+            border-radius: 50%;
+        }
+
+        .plant.tree-small {
+            width: 12px;
+            height: 30px;
+            background: linear-gradient(180deg, #654321 0%, #8B4513 100%);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .plant.tree-small::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 20px;
+            background: radial-gradient(circle, #228B22 0%, #32CD32 70%, #90EE90 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(34, 139, 34, 0.3);
+        }
+
+        .gardening-tools {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .shovel {
+            width: 8px;
+            height: 20px;
+            background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
+            border-radius: 1px;
+            position: absolute;
+            right: 0;
+            transform: rotate(15deg);
+        }
+
+        .shovel::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -3px;
+            width: 14px;
+            height: 8px;
+            background: linear-gradient(45deg, #C0C0C0 0%, #808080 100%);
+            border-radius: 2px;
+        }
+
+        .watering-can {
+            width: 12px;
+            height: 15px;
+            background: linear-gradient(135deg, #4169E1 0%, #0000CD 100%);
+            border-radius: 2px 2px 8px 8px;
+            position: absolute;
+            right: 15px;
+            top: 5px;
+        }
+
+        .watering-can::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 2px;
+            width: 8px;
+            height: 6px;
+            background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
+            border-radius: 1px;
+        }
+
+        .service-item h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .service-item p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .service-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .service-features span {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .form-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        button {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(69, 160, 73, 0.1));
+            border-radius: 10px;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            display: none;
+        }
+
+        .result h3 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .result p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        .flip-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #666;
+            font-size: 14px;
+            opacity: 0.7;
+            text-align: center;
+        }
+
+        .flip-hint::before {
+            content: '🔄';
+            display: block;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .back-content {
+            z-index: 2;
+            position: relative;
+        }
+
+        .back-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-content p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li::before {
+            content: '✨';
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                height: auto;
+                min-height: 600px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-btn {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scene">
+        <div class="card">
+            <!-- Front of the card -->
+            <div class="card-face card-front">
+                <div class="container">
+                    <h1>🌱 Price Recommendation System</h1>
+
+                    <!-- Hero Image Banner -->
+                    <div
+                        style="width: 100%; height: 150px; border-radius: 12px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        <img src="/static/images/main_hero.png" alt="Lush Garden"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+
+                    <!-- Services Showcase (Updated with Images) -->
+                    <div class="services-showcase">
+                        <div class="service-item">
+                            <div class="service-icon" style="background: none; height: auto;">
+                                <img src="/static/images/tree.png" alt="Tree Service"
+                                    style="width: 100%; height: 120px; object-fit: cover; border-radius: 10px;">
+                            </div>
+                            <h3>Tree Care</h3>
+                            <p>Professional removal & pruning.</p>
+                            <div class="service-features">
+                                <span>✓ 24/7 Emergency</span>
+                            </div>
+                        </div>
+
+                        <div class="service-item">
+                            <div class="service-icon" style="background: none; height: auto;">
+                                <img src="/static/images/garden.png" alt="Garden Design"
+                                    style="width: 100%; height: 120px; object-fit: cover; border-radius: 10px;">
+                            </div>
+                            <h3>Landscaping</h3>
+                            <p>Design, build & maintain.</p>
+                            <div class="service-features">
+                                <span>✓ Custom Design</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gardening Information Section -->
+                    <div
+                        style="background: rgba(255,255,255,0.8); border-radius: 12px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(102, 126, 234, 0.2);">
+                        <h3 style="color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                            <span>🌿</span> The Importance of Professional Gardening
+                        </h3>
+                        <p style="color: #555; font-size: 0.95rem; line-height: 1.5;">
+                            A well-maintained garden is more than just visual appeal. It improves air quality, increases
+                            property value by up to 15%, and provides a serene sanctuary for mental well-being.
+                            Our scientific approach connects you with localized pricing data to ensure you get the best
+                            value for your green space investment.
+                        </p>
+                    </div>
+
+                    <!-- Navigation Links -->
+                    <div class="nav-links">
+                        <h3>Quick Access</h3>
+                        <div class="nav-buttons">
+                            <a href="/simple-login" class="nav-btn">Simple Login</a>
+                            <a href="/customer-info" class="nav-btn">Customer Info</a>
+                            <a href="/login" class="nav-btn">Full Login</a>
+                            <a href="/register" class="nav-btn">Register</a>
+                            <a href="/services" class="nav-btn">Our Services</a>
+                            <a href="/ai-analysis" class="nav-btn">AI Diagnosis 🤖</a>
+                            <a href="/google-setup" class="nav-btn">Google Setup</a>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <form id="recommendationForm">
+                            <div class="form-group">
+                                <label for="userId">User ID:</label>
+                                <input type="number" id="userId" required placeholder="Enter user ID">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gardenerId">Gardener ID:</label>
+                                <input type="number" id="gardenerId" required placeholder="Enter gardener ID">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="location">Location:</label>
+                                <input type="text" id="location" required placeholder="Enter location (e.g., New York)">
+                            </div>
+
+                            <button type="submit" id="submitBtn">Get Price Recommendation</button>
+                        </form>
+
+                        <div id="result" class="result"></div>
+                    </div>
+                </div>
+
+                <!-- <div class="flip-hint">
+                    Hover to flip card
+                </div> -->
+            </div>
+
+            <!-- Back of the card -->
+            <div class="card-face card-back">
+                <div class="back-content">
+                    <h2>🌟 Welcome to Our System</h2>
+                    <p>Discover the power of intelligent price recommendations for gardening services. Our advanced
+                        system analyzes market data, user preferences, and location-based factors to provide optimal
+                        pricing strategies.</p>
+
+                    <ul class="feature-list">
+                        <li><strong>Smart Analytics:</strong> AI-powered price optimization</li>
+                        <li><strong>Real-time Data:</strong> Live market trend analysis</li>
+                        <li><strong>User-Centric:</strong> Personalized recommendations</li>
+                        <li><strong>Location Aware:</strong> Regional pricing insights</li>
+                        <li><strong>Secure & Private:</strong> Your data is protected</li>
+                        <li><strong>Easy Integration:</strong> Simple API access</li>
+                    </ul>
+
+                    <p style="margin-top: 30px; font-style: italic;">
+                        "Transforming gardening economics with data-driven intelligence"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('recommendationForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const resultDiv = document.getElementById('result');
+            const responseDiv = document.createElement('div');
+            responseDiv.id = 'response'; // Ensure this exists if we are emptying it
+            // Note: The original generic code might expect existing elements.
+            // Let's make sure the result div has the structure or we create it.
+            resultDiv.innerHTML = '<div id="loading" class="loading" style="display:none;">Getting recommendation...</div><div id="response"></div>';
+
+            const loadingDiv = document.getElementById('loading');
+            const actualResponseDiv = document.getElementById('response');
+
+            // Get form values
+            const userId = document.getElementById('userId').value;
+            const gardenerId = document.getElementById('gardenerId').value;
+            const location = document.getElementById('location').value;
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Getting Recommendation...';
+            resultDiv.style.display = 'block';
+            loadingDiv.style.display = 'block';
+            actualResponseDiv.innerHTML = '';
+
+            try {
+                // Make API request to Node.js server
+                const response = await fetch('/api/price-recommendation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        user_id: parseInt(userId),
+                        gardener_id: parseInt(gardenerId),
+                        location: location
+                    })
+                });
+
+                const data = await response.json();
+
+                // Hide loading
+                loadingDiv.style.display = 'none';
+
+                if (response.ok) {
+                    // Display successful result
+                    actualResponseDiv.innerHTML = `
+                    <h3 style="color: #2e7d32; margin-bottom: 10px;">✅ Price Recommendation</h3>
+                    <p><strong>Predicted Demand:</strong> ${data.predicted_demand}</p>
+                    <p><strong>Base Price:</strong> $${data.base_price}</p>
+                    <p><strong>Final Price:</strong> $${data.final_price}</p>
+                    <p><strong>Discount:</strong> ${data.discount}%</p>
+                    <p><strong>Recommended Offer:</strong> ${data.offer}</p>
+                `;
+                } else {
+                    // Display error
+                    actualResponseDiv.innerHTML = `<h3 style="color: #c62828;">❌ Error</h3><p>${data.detail || 'An error occurred'}</p>`;
+                }
+
+            } catch (error) {
+                // Hide loading
+                loadingDiv.style.display = 'none';
+                actualResponseDiv.innerHTML = `<h3 style="color: #c62828;">❌ Error</h3><p>Failed to connect to the server. Make sure the API is running.</p>`;
+                console.error('Error:', error);
+            }
+
+            // Reset button
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Get Price Recommendation';
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google OAuth Setup - Price Recommendation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .setup-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .step {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 4px solid #4285f4;
+            background: #f8f9fa;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #4285f4;
+        }
+        .code {
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1>🔐 Google OAuth Setup Guide</h1>
+        <p>Follow these steps to enable Google login for your Price Recommendation System.</p>
+
+        <div class="warning">
+            <strong>⚠️ Important:</strong> You need actual Google OAuth credentials to test Google login. The placeholder values in .env won't work.
+        </div>
+
+        <div class="step">
+            <h3>Step 1: Create Google Cloud Project</h3>
+            <p>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></p>
+            <ul>
+                <li>Create a new project or select an existing one</li>
+                <li>Make sure billing is enabled (required for OAuth)</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>Step 2: Enable Google+ API</h3>
+            <ul>
+                <li>Go to "APIs & Services" > "Library"</li>
+                <li>Search for "Google+ API" and enable it</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>Step 3: Create OAuth Credentials</h3>
+            <ul>
+                <li>Go to "APIs & Services" > "Credentials"</li>
+                <li>Click "Create Credentials" > "OAuth 2.0 Client ID"</li>
+                <li>Choose "Web application" as application type</li>
+                <li>Add authorized redirect URIs: <code>http://localhost:3000/auth/google/callback</code></li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>Step 4: Update Environment Variables</h3>
+            <p>Edit the <code>.env</code> file in your project root:</p>
+            <div class="code">
+GOOGLE_CLIENT_ID=your-actual-client-id-here<br>
+GOOGLE_CLIENT_SECRET=your-actual-client-secret-here
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>Step 5: Test Google Login</h3>
+            <ul>
+                <li>Restart your server: <code>node server.js</code></li>
+                <li>Go to <a href="http://localhost:3000/login" target="_blank">http://localhost:3000/login</a></li>
+                <li>Click the "🔍 Google" button</li>
+                <li>You should be redirected to Google for authentication</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <strong>✅ What's Working:</strong>
+            <ul>
+                <li>Google login button is functional</li>
+                <li>OAuth routes are configured</li>
+                <li>Database schema supports Google users</li>
+                <li>Passport.js integration is complete</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>🔧 Troubleshooting:</strong>
+            <ul>
+                <li>Make sure your redirect URI exactly matches: <code>http://localhost:3000/auth/google/callback</code></li>
+                <li>Check that your domain is authorized in Google Cloud Console</li>
+                <li>Verify your Client ID and Secret are correct in .env</li>
+                <li>Restart the server after changing environment variables</li>
+            </ul>
+        </div>
+
+        <p><a href="/login">← Back to Login</a></p>
+    </div>
+</body>
+</html>

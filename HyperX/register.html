@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Price Recommendation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .register-header {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .register-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .register-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .register-form {
+            padding: 40px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2196F3;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            color: #666;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: white;
+            padding: 0 5px;
+        }
+
+        .form-group input:focus+label,
+        .form-group input:not(:placeholder-shown)+label {
+            top: -10px;
+            font-size: 12px;
+            color: #2196F3;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .register-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: #1976D2;
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-error {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+        }
+
+        .alert-success {
+            background-color: #efe;
+            border: 1px solid #cfc;
+            color: #363;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2196F3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .terms {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .terms a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .form-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 20px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .register-container {
+                margin: 20px;
+                max-width: none;
+            }
+
+            .register-header {
+                padding: 20px 30px;
+            }
+
+            .register-form {
+                padding: 30px 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <h1>📝 Create Account</h1>
+            <p>Join our price recommendation system</p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <form class="register-form" id="registerForm">
+            <!-- Personal Information Section -->
+            <div class="form-section">
+                <h3 style="color: #2196F3; margin-bottom: 20px; font-size: 18px; text-align: center;">📋 Personal
+                    Information</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" id="firstName" placeholder=" " required>
+                        <label for="firstName">First Name</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="lastName" placeholder=" " required>
+                        <label for="lastName">Last Name</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="email" id="email" placeholder=" " required>
+                    <label for="email">Email Address</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="tel" id="mobile" placeholder=" " required pattern="[0-9]{10}">
+                    <label for="mobile">Mobile Number</label>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="date" id="dateOfBirth" placeholder=" ">
+                        <label for="dateOfBirth">Date of Birth (Optional)</label>
+                    </div>
+                    <div class="form-group">
+                        <select id="gender"
+                            style="width: 100%; padding: 15px 20px; border: 2px solid #e1e5e9; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; background: #f8f9fa;">
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer-not-to-say">Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address Section -->
+            <div class="form-section">
+                <h3 style="color: #2196F3; margin-bottom: 20px; font-size: 18px; text-align: center;">🏠 Address
+                    Information</h3>
+
+                <div class="form-group">
+                    <input type="text" id="streetAddress" placeholder=" " required>
+                    <label for="streetAddress">Street Address</label>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" id="city" placeholder=" " required>
+                        <label for="city">City</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="state" placeholder=" " required>
+                        <label for="state">State</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" id="zipCode" placeholder=" " required pattern="[0-9]{5,6}">
+                        <label for="zipCode">ZIP Code</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="country" placeholder=" " value="United States" required>
+                        <label for="country">Country</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Section -->
+            <div class="form-section">
+                <h3 style="color: #2196F3; margin-bottom: 20px; font-size: 18px; text-align: center;">🔐 Account Setup
+                </h3>
+
+                <div class="form-group">
+                    <select id="userType"
+                        style="width: 100%; padding: 15px 20px; border: 2px solid #e1e5e9; border-radius: 8px; font-size: 16px; transition: all 0.3s ease; background: #f8f9fa;"
+                        required>
+                        <option value="">Select Account Type</option>
+                        <option value="customer">Customer - Get price recommendations</option>
+                        <option value="gardener">Gardener - Provide gardening services</option>
+                        <option value="admin">Administrator - System management</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label
+                        style="position: relative; top: 0; left: 0; margin-bottom: 10px; display: block; color: #666; font-size: 14px;">Preferred
+                        Service Location (Click on map)</label>
+                    <div id="locationPickerMap"
+                        style="height: 300px; width: 100%; border-radius: 8px; border: 2px solid #e1e5e9; margin-bottom: 10px;">
+                    </div>
+                    <input type="text" id="location" placeholder=" " required readonly
+                        style="background-color: #eee; cursor: not-allowed;">
+                    <label for="location" style="display: none;">Selected Location Coordinates</label>
+                    <small style="color: #666; font-size: 12px;">Click on the map to select your location.</small>
+                </div>
+
+                <!-- Leaflet Resources -->
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+                    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+                <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+                <style>
+                    /* Fix for Leaflet in this container */
+                    .leaflet-container {
+                        z-index: 1;
+                    }
+                </style>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Initialize map
+                        const pickerMap = L.map('locationPickerMap').setView([39.8283, -98.5795], 3); // US View
+
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(pickerMap);
+
+                        let marker;
+                        const locationInput = document.getElementById('location');
+
+                        pickerMap.on('click', function (e) {
+                            const lat = e.latlng.lat.toFixed(4);
+                            const lng = e.latlng.lng.toFixed(4);
+
+                            if (marker) {
+                                marker.setLatLng(e.latlng);
+                            } else {
+                                marker = L.marker(e.latlng).addTo(pickerMap);
+                            }
+
+                            locationInput.value = `${lat}, ${lng}`;
+                            // Trigger input event to handle floating labels if needed (though we hid it)
+                        });
+
+                        // Try to get user's current location
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(position => {
+                                const lat = position.coords.latitude;
+                                const lng = position.coords.longitude;
+                                pickerMap.setView([lat, lng], 13);
+                            });
+                        }
+                    });
+                </script>
+
+                <div class="form-group">
+                    <input type="password" id="password" placeholder=" " required minlength="8">
+                    <label for="password">Password (Min 8 characters)</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" id="confirmPassword" placeholder=" " required minlength="8">
+                    <label for="confirmPassword">Confirm Password</label>
+                </div>
+            </div>
+
+            <div class="terms">
+                By creating an account, you agree to our <a href="#" onclick="alert('Terms coming soon!')">Terms of
+                    Service</a> and <a href="#" onclick="alert('Privacy policy coming soon!')">Privacy Policy</a>
+            </div>
+
+            <button type="submit" class="register-btn" id="registerBtn">
+                Create Account
+            </button>
+
+            <div class="login-link">
+                Already have an account? <a href="login.html">Sign in</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Form handling
+        document.getElementById('registerForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const mobile = document.getElementById('mobile').value;
+            const streetAddress = document.getElementById('streetAddress').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const zipCode = document.getElementById('zipCode').value;
+            const country = document.getElementById('country').value;
+            const dateOfBirth = document.getElementById('dateOfBirth').value;
+            const gender = document.getElementById('gender').value;
+            const userType = document.getElementById('userType').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const location = document.getElementById('location').value;
+            const registerBtn = document.getElementById('registerBtn');
+
+            // Clear previous alerts
+            const alertDiv = document.getElementById('alert');
+            alertDiv.style.display = 'none';
+            alertDiv.className = 'alert';
+
+            // Validation
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match!', 'error');
+                return;
+            }
+
+            if (password.length < 8) {
+                showAlert('Password must be at least 8 characters long!', 'error');
+                return;
+            }
+
+            if (!/^[0-9]{10}$/.test(mobile)) {
+                showAlert('Please enter a valid 10-digit mobile number!', 'error');
+                return;
+            }
+
+            if (!/^[0-9]{5,6}$/.test(zipCode)) {
+                showAlert('Please enter a valid ZIP code!', 'error');
+                return;
+            }
+
+            // Show loading state
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<span class="loading"></span>Creating account...';
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        name: `${firstName} ${lastName}`,
+                        email,
+                        mobile,
+                        address: {
+                            street: streetAddress,
+                            city,
+                            state,
+                            zipCode,
+                            country
+                        },
+                        dateOfBirth: dateOfBirth || null,
+                        gender: gender || null,
+                        userType,
+                        password,
+                        location
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Success - redirect to appropriate login page
+                    showAlert('Account created successfully! Redirecting to login...', 'success');
+                    setTimeout(() => {
+                        if (userType === 'gardener') {
+                            window.location.href = 'gardener_login.html';
+                        } else if (userType === 'admin') {
+                            window.location.href = 'admin_login.html';
+                        } else {
+                            window.location.href = 'login.html';
+                        }
+                    }, 1500);
+                } else {
+                    // Error
+                    showAlert(data.error || 'Registration failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showAlert('Network error. Please check your connection and try again.', 'error');
+            }
+
+            // Reset button
+            registerBtn.disabled = false;
+            registerBtn.textContent = 'Create Account';
+        });
+
+        // Alert function
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+
+            // Auto-hide after 5 seconds for errors
+            if (type === 'error') {
+                setTimeout(() => {
+                    alertDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Password confirmation validation
+        document.getElementById('confirmPassword').addEventListener('input', function () {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+
+            if (confirmPassword && password !== confirmPassword) {
+                this.style.borderColor = '#f44336';
+            } else {
+                this.style.borderColor = '#e1e5e9';
+            }
+        });
+    </script>
+</body>
+
+</html>

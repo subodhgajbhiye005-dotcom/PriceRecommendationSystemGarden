@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services - HyperX Gardening</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Overlay patterns */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 226, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            color: #f0f0f0;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            /* Important for image rounding */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-image {
+            height: 200px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .service-card:hover .card-image img {
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            margin-top: -30px;
+            /* Overlap with image */
+            position: relative;
+            background-color: white;
+            border: 4px solid white;
+        }
+
+        .service-card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .service-card p {
+            color: #666;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .price-tag {
+            font-weight: bold;
+            color: #764ba2;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .features li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            /* Better for multi-line */
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .features li::before {
+            content: '✓';
+            color: #4CAF50;
+            margin-right: 10px;
+            font-weight: bold;
+            flex-shrink: 0;
+            /* Prevent icon shrinking */
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #764ba2;
+            color: #764ba2;
+        }
+
+        .btn-outline:hover {
+            background: #764ba2;
+            color: white;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 60px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-top: 40px;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="/" class="back-link">← Back to Home</a>
+
+    <div class="container">
+        <header>
+            <h1>Premium Gardening Services</h1>
+            <p class="subtitle">Elevate your outdoor space with our professional, data-driven gardening solutions.</p>
+        </header>
+
+        <div class="services-grid">
+            <!-- Service 1 -->
+            <div class="service-card">
+                <div class="card-image">
+                    <img src="/static/images/tree.png" alt="Arborist pruning a large tree">
+                </div>
+                <div class="card-content">
+                    <div class="icon-wrapper">🌳</div>
+                    <h2>Tree Specialists</h2>
+                    <p>Our certified arborists provide comprehensive tree care to ensure the longevity and safety of
+                        your trees. From precision pruning to emergency storm clearance, we handle it all with
+                        industry-leading equipment.</p>
+                    <ul class="features">
+                        <li><strong>Safe Removal:</strong> 24/7 Emergency response for storm damage.</li>
+                        <li><strong>Health Audits:</strong> Disease diagnosis and treatment plans.</li>
+                        <li><strong>Precision Pruning:</strong> Structural trimming for growth and safety.</li>
+                        <li><strong>Stump Grinding:</strong> Complete removal for a clean landscape.</li>
+                    </ul>
+                    <div class="price-tag">Starting from $150</div>
+                    <a href="/login" class="btn">Book Assessment</a>
+                </div>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="service-card">
+                <div class="card-image">
+                    <img src="/static/images/garden.png" alt="Modern garden landscape">
+                </div>
+                <div class="card-content">
+                    <div class="icon-wrapper">🌺</div>
+                    <h2>Garden Design</h2>
+                    <p>Unlock the potential of your outdoor space. Our award-winning landscape architects collaborate
+                        with you to design sustainable, breathtaking gardens that reflect your personal style and local
+                        ecology.</p>
+                    <ul class="features">
+                        <li><strong>3D Visualization:</strong> See your design before we build.</li>
+                        <li><strong>Native Plantings:</strong> Eco-friendly and drought-resistant options.</li>
+                        <li><strong>Hardscaping:</strong> Custom patios, walkways, and retaining walls.</li>
+                        <li><strong>Water Features:</strong> Ponds, fountains, and irrigation systems.</li>
+                    </ul>
+                    <div class="price-tag">Custom Quote</div>
+                    <a href="/login" class="btn">Start Consultation</a>
+                </div>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="service-card">
+                <div class="card-image">
+                    <img src="/static/images/lawn.png" alt="Perfectly manicured lawn">
+                </div>
+                <div class="card-content">
+                    <div class="icon-wrapper">✂️</div>
+                    <h2>Lawn Maintenance</h2>
+                    <p>Enjoy a golf-course quality lawn without lifting a finger. Our comprehensive maintenance packages
+                        include everything your grass needs to stay lush, green, and healthy throughout the seasons.</p>
+                    <ul class="features">
+                        <li><strong>Regular Mowing:</strong> Weekly or bi-weekly professional cutting.</li>
+                        <li><strong>Nutrient Management:</strong> Organic fertilization programs.</li>
+                        <li><strong>Soil Health:</strong> Core aeration and overseeding.</li>
+                        <li><strong>Weed Control:</strong> Targeted treatments for a pristine look.</li>
+                    </ul>
+                    <div class="price-tag">Subscriptions from $50/mo</div>
+                    <a href="/login" class="btn">View Plans</a>
+                </div>
+            </div>
+
+            <!-- Service 4 -->
+            <div class="service-card">
+                <div class="card-image">
+                    <img src="/static/images/analytics.png" alt="Smart gardening analytics interface">
+                </div>
+                <div class="card-content">
+                    <div class="icon-wrapper">📊</div>
+                    <h2>Smart Analytics</h2>
+                    <p>Leverage the power of data. Our proprietary AI analyzes local weather patterns, soil data, and
+                        market trends to provide you with precise planting schedules and maintenance recommendations.
+                    </p>
+                    <ul class="features">
+                        <li><strong>Growth Prediction:</strong> AI-driven harvest forecasting.</li>
+                        <li><strong>Smart Alerts:</strong> Real-time notifications for frost or pests.</li>
+                        <li><strong>Cost Optimization:</strong> Data-backed purchasing advice.</li>
+                        <li><strong>Seasonal Insights:</strong> Customized quarterly reports.</li>
+                    </ul>
+                    <div class="price-tag">Included with Service</div>
+                    <a href="/login" class="btn btn-outline">Analyze Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service Area Map Section -->
+        <div
+            style="margin-bottom: 60px; background: rgba(255,255,255,0.95); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #333;">Our Service Areas</h2>
+            <p style="text-align: center; margin-bottom: 30px; color: #666;">We currently serve the following greater
+                metropolitan areas.</p>
+            <div id="serviceMap" style="height: 400px; width: 100%; border-radius: 15px; z-index: 1;"></div>
+        </div>
+
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Initialize map centered on a generic US location (e.g., Kansas) or a specific hub
+                const map = L.map('serviceMap').setView([39.8283, -98.5795], 4);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                // Add markers for major service hubs
+                const locations = [
+                    { lat: 40.7128, lng: -74.0060, city: "New York, NY" },
+                    { lat: 34.0522, lng: -118.2437, city: "Los Angeles, CA" },
+                    { lat: 41.8781, lng: -87.6298, city: "Chicago, IL" },
+                    { lat: 29.7604, lng: -95.3698, city: "Houston, TX" },
+                    { lat: 33.4484, lng: -112.0740, city: "Phoenix, AZ" }
+                ];
+
+                locations.forEach(loc => {
+                    L.marker([loc.lat, loc.lng])
+                        .addTo(map)
+                        .bindPopup(`<b>${loc.city}</b><br>Available Service Area`)
+                });
+            });
+        </script>
+
+        <div class="cta-section">
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #333;">Ready to Transform Your Garden?</h2>
+            <p style="margin-bottom: 30px; font-size: 1.1rem; color: #666;">Join thousands of satisfied customers who
+                trust HyperX for their landscaping needs.</p>
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <a href="/register" class="btn" style="padding: 15px 40px; font-size: 1.2rem;">Get Started</a>
+                <a href="/login" class="btn btn-outline" style="padding: 15px 40px; font-size: 1.2rem;">Member Login</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
